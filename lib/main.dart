@@ -1,125 +1,133 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:travoli/core/helpers/network_call_managers.dart';
+import 'package:travoli/feature/authentication/presentation/screens/splash_screen.dart';
+import 'package:travoli/feature/dashboard/explore/domain/models/rentals.dart';
+import 'package:travoli/feature/dashboard/explore/domain/services/rental_service.dart';
+import 'package:travoli/feature/dashboard/general/bloc/filter_bloc.dart';
+import 'package:travoli/feature/dashboard/manage_apartments/domain/bloc/upload_bloc.dart';
+import 'package:travoli/feature/dashboard/manage_apartments/domain/modals/xfile.dart';
+import 'package:travoli/feature/dashboard/manage_apartments/domain/services/upload_service.dart';
+import 'package:travoli/feature/dashboard/profile/domain/modals/profile.dart';
+import 'package:travoli/feature/dashboard/wishlist/bloc/wishlist_bloc.dart';
+import 'package:travoli/feature/dashboard/wishlist/domain/service/favorite_service.dart';
+import 'core/configs/configs.dart';
+import 'core/helpers/router/app_route.dart';
+import 'core/helpers/shared_preference_manager.dart';
+import 'feature/authentication/domain/services/auth_services.dart';
+import 'feature/authentication/domain/bloc/authentication_bloc.dart';
+import 'package:path_provider/path_provider.dart' as pp;
+import 'feature/dashboard/explore/bloc/rentals_bloc.dart';
+import 'feature/dashboard/general/bloc/agent_bloc.dart';
+import 'feature/dashboard/general/domain/agent_service.dart';
+import 'feature/dashboard/general/domain/general_service.dart';
+import 'feature/dashboard/general/modals/agent.dart';
+import 'feature/dashboard/profile/bloc/profile_bloc.dart';
+import 'feature/dashboard/profile/domain/services/profile_service.dart';
+import 'simple_bloc_observer.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferencesManager.init();
+  await _openHive();
+  final apiClient = ApiClient();
+  final customApiClient = CustomApiClient();
+  final authenticationService = AuthenticationService(apiClient: apiClient);
+  final rentalService = RentalService(apiClient: apiClient);
+  final profileService = ProfileService(apiClient: apiClient);
+  final favoriteService = FavoriteService(apiClient: apiClient);
+  final generalService = GeneralService(apiClient: customApiClient);
+  final rentalUpload =  RentalUpload(customApiClient: customApiClient, apiClient: apiClient);
+  final agentService = AgentService(apiClient: apiClient);
+  runApp(MyApp(
+    authenticationService: authenticationService,
+    rentalService: rentalService,
+    profileService: profileService,
+    favoriteService: favoriteService,
+    generalService: generalService,
+    rentalUpload: rentalUpload,
+    agentService: agentService,
+  ));
+
+  await SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+  );
+  Bloc.observer = AppBlocObserver();
+  Bloc.transformer;
+}
+
+_openHive() async {
+  var appDocDir = await pp.getApplicationDocumentsDirectory();
+  await Hive.initFlutter(appDocDir.path);
+  Hive.init(appDocDir.path);
+  Hive.registerAdapter(ProfileAdapter());
+  Hive.registerAdapter(RentalsAdapter());
+  Hive.registerAdapter(BillAdapter());
+  Hive.registerAdapter(PhotoAdapter());
+  Hive.registerAdapter(XFileAdapter());
+  Hive.registerAdapter(AgentAdapter());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  const MyApp(
+      {super.key,
+      required this.authenticationService,
+      required this.rentalService,
+      required this.profileService,
+      required this.favoriteService,
+      required this.generalService,
+      required this.agentService,
+      required this.rentalUpload});
+  final AuthenticationService authenticationService;
+  final RentalService rentalService;
+  final ProfileService profileService;
+  final FavoriteService favoriteService;
+  final GeneralService generalService;
+  final RentalUpload rentalUpload;
+  final AgentService agentService;
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthenticationBloc>(
+            create: (BuildContext context) => AuthenticationBloc(
+                authenticationService: authenticationService)),
+        BlocProvider<RentalsBloc>(
+            create: (BuildContext context) =>
+                RentalsBloc(rentalService: rentalService)),
+        BlocProvider<ProfileBloc>(
+            create: (BuildContext context) =>
+                ProfileBloc(profileService: profileService)),
+        BlocProvider<WishlistBloc>(
+            create: (BuildContext context) =>
+                WishlistBloc(favoriteService: favoriteService)),
+        BlocProvider<FilterBloc>(
+            create: (BuildContext context) => FilterBloc()),
+        BlocProvider<UploadBloc>(
+            create: (BuildContext context) =>
+                UploadBloc(rentalUpload: rentalUpload)),
+        BlocProvider<AgentBloc>(
+            create: (BuildContext context) =>
+                AgentBloc(agentService: agentService)),
+      ],
+      child: GlobalLoaderOverlay(
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Travoli',
+          theme: AppTheme().lightTheme,
+          onGenerateRoute: AppRouter.onGenerated,
+          builder: (context, widget) {
+            final media = MediaQuery.of(context);
+            Dims.setSize(media);
+            return widget!;
+          },
+          home: const SplashScreen(),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
