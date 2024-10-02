@@ -25,21 +25,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   final cityController = TextEditingController();
   final apartmentTypeController = TextEditingController();
   int selectedIndex = 1;
-  List<String> propertyType = [
-    "Single room",
-    "Two Bedroom",
-    "Three Bedroom",
-    "Four Bedroom",
-    "Five Bedroom",
-    "Apartment Complex",
-    "bungalow",
-    "mansion",
-    "fully detached duplex",
-    "condos",
-    "flat",
-    "terraced house",
-    "semi detached duplex"
-  ];
+  
  
 
    final _formKey = GlobalKey<FormState>();
@@ -86,17 +72,17 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                           height: 200,
                           wrapWidget: Wrap(
                             children: List.generate(
-                              propertyType.length,
+                              apartmentTypes.length,
                               (index) => GestureDetector(
                                   onTap: () {
                                     setState(() {
                                       apartmentTypeController.text =
-                                          propertyType[index].capitalize;
+                                          apartmentTypes[index].capitalize;
                                       moveToOldScreen(context: context);
                                     });
                                   },
                                   child: PropertyTile(
-                                    name: propertyType[index].capitalize,
+                                    name: apartmentTypes[index].capitalize,
                                   )),
                             ),
                           ),

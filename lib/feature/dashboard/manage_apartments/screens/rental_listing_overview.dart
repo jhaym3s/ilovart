@@ -58,6 +58,7 @@ class _RentalListingOverviewState extends State<RentalListingOverview> {
 
   late Map<String, dynamic> bills;
   late List<Bill> billList;
+
   @override
   void initState() {
     super.initState();
@@ -99,15 +100,18 @@ class _RentalListingOverviewState extends State<RentalListingOverview> {
           listener: (context, state) {
             if(state is UploadRentalFailureState){
                 hideOverlayLoader(context);
-          ToastManager.errorToast(context, message:state.failureMessage);
+                ToastManager.errorToast(context, message:state.failureMessage);
             }
              if(state is UploadRentalSuccessState){
-        hideOverlayLoader(context);
-          ToastManager.errorToast(context, message:state.successMessage);
+          hideOverlayLoader(context);
+          ToastManager.successToast(context, message:state.successMessage);
           moveAndClearStack(context: context, page: AgentCustomNavigationBar.routeName);
             }
           },
           builder: (context, state) {
+            if (state is UploadRentalLoadingState){
+                showOverlayLoader(context);
+            }
             return SafeArea(
                     child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
@@ -115,12 +119,29 @@ class _RentalListingOverviewState extends State<RentalListingOverview> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SpaceY(40.dy),
-                      CustomText(
-                        text: "Overview",
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xff0B0B0B),
-                        fontFamily: kFontFamily,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomText(
+                            text: "Overview",
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xff0B0B0B),
+                            fontFamily: kFontFamily,
+                          ),
+                          GestureDetector(
+                            onTap: (){
+                            moveAndClearStack(context: context, page: AgentCustomNavigationBar.routeName);
+                            },
+                            child: CustomText(
+                              text: "Cancel",
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                              color: kError,
+                              fontFamily: kFontFamily,
+                            ),
+                          ),
+                        ],
                       ),
                       SpaceY(4.dy),
                       CustomText(

@@ -58,3 +58,17 @@ List<String> demoStateList  = [
   "Zamfara",
   "Federal Capital Territory (FCT)"
 ];
+ List<String> apartmentTypes = [
+    "one bedroom",
+    "Two Bedroom",
+    "Three Bedroom",
+    "Four Bedroom",
+    "Five Bedroom",
+    "Terraced house",
+    "Semi detached duplex",
+    "Single room",
+    "Apartment Complex",
+    "Fully detached duplex",
+    "Terraced house",
+    "Semi detached duplex"
+  ];

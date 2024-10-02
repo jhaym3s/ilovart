@@ -35,16 +35,16 @@ FutureOr<void> applyFilter(ApplyFilter event, Emitter<FilterState> emit) {
      selectedRanges.addAll([5000000,100000000]); 
 }}
     final List<Rentals> rentals = _hiveRepository.get(key: HiveKeys.rentals, name: HiveKeys.rentals);
-    final List<Rentals> rentalsByLocation = rentals.where((element) => element.state == event.location).toList();
+    final List<Rentals> rentalsByLocation = rentals.where((element) => element.state.toLowerCase() == event.location).toList();
     if (rentalsByLocation.isNotEmpty){
-     final  List<Rentals> rentalByType = rentalsByLocation.where((rental) => event.apartmentTypes.contains(rental.propertyType)).toList();
+     final  List<Rentals> rentalByType = rentalsByLocation.where((rental) => event.apartmentTypes.contains(rental.propertyType.toLowerCase())).toList();
       if (rentalByType.isNotEmpty){
           for (var i = 0; i < event.selectedRanges.length; i++) {
             selectRange(event.selectedRanges[i]);
           }
       final min = selectedRanges.reduce((value, element) => value < element? value:element);
       final max = selectedRanges.reduce((value, element) => value > element? value:element);
-     final List<Rentals> rentalByAmount = rentalByType.where((rental) =>  rental.bills.firstWhere((map) => map.name == "john").price>= min && rental.bills.firstWhere((map) => map.name == "john").price>= max).toList();  
+     final List<Rentals> rentalByAmount = rentalByType.where((rental) => rental.bills.firstWhere((map) => map.name == "rent").price>= min && rental.bills.firstWhere((map) => map.name == "rent").price <= max).toList();  
      if(rentalByAmount.isNotEmpty){
         emit(ApplyFilterSuccessState(rentals: rentalByAmount));
      }else{

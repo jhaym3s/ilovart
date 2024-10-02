@@ -26,15 +26,19 @@ class HouseDetailScreen extends StatefulWidget {
 }
 
 class _HouseDetailScreenState extends State<HouseDetailScreen> {
-  late String agentId;
+  late String agentId,amount;
   List<String> favorites = [];
+  
 
   @override
   void initState() {
     super.initState();
     agentId = widget.rentals!.agentId;
+    print("agentId $agentId");
     favorites = SharedPreferencesManager.getStringList(PrefKeys.favorite);
-    // print("object ${widget.rentals!.bills.firstWhere((map) => map.name == "john").price.toString()}");
+    amount =  widget.rentals!.bills.firstWhere((map) => map.name == "rent").price.toString();
+    print("agentId $amount");
+    context.read<AgentBloc>().add(GetAgentInfo(id: agentId));
   }
 
   Future<void> _launchInBrowser(String url) async {
@@ -152,7 +156,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                 padding: EdgeInsets.symmetric(horizontal: kScreenPadding.dx),
                 child: CustomText(
                   text: CurrencyFormatter.format(
-                      widget.rentals!.bills[0].price.toString(), nairaSettings,
+                     amount,nairaSettings,
                       decimal: 2),
                   overflow: TextOverflow.ellipsis,
                   fontSize: 18.sp,
@@ -227,9 +231,9 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
               SpaceY(8.dy),
               BlocConsumer<AgentBloc, AgentState>(
                 listener: (context, state) {
-                  if (state is AgentInitial) {
-                    context.read<AgentBloc>().add(GetAgentInfo(id: agentId));
-                  }
+                  // if (state is AgentInitial) {
+                  //   context.read<AgentBloc>().add(GetAgentInfo(id: agentId));
+                  // }
                 },
                 builder: (context, state) {
                   if (state is AgentInitial) {
@@ -238,10 +242,12 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                   return Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: kScreenPadding.dx),
-                    child: (state is AgentSuccessState)?Row(
+                    child: (state is AgentSuccessState)?
+                    Row(
                       children: [
                         const CircleAvatar(
                           radius: 22.5,
+                          child: Icon(Icons.person_3_outlined),
                         ),
                         SpaceX(10.dx),
                            Column(

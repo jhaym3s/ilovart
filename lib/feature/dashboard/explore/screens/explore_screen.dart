@@ -116,7 +116,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               message: state.errorMessage.capitalize);
                         }
                       }
-                      
                       if (state is AddWishListSuccessState) {
                         ToastManager.successToast(context,
                             message: "Added Successfully");
@@ -139,6 +138,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   itemCount: state.rentals.length,
                                   scrollDirection: Axis.horizontal,
                                   itemBuilder: (context, index) {
+                                    print("rental count ${state.rentals.length}");
                                     return GestureDetector(
                                         onTap: () {
                                           moveFromBottomNavBarScreen(
@@ -172,7 +172,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                               : Icons.favorite_border,
                                           containerWidth: 202.dx,
                                           image: state
-                                              .rentals[index == 4 ? 0 : index]
+                                              .rentals[index]
                                               .photos[0]
                                               .url,
                                           imageCount: state
@@ -261,7 +261,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                             : Icons.favorite_border,
                                         containerWidth: double.infinity,
                                         image: state
-                                            .rentals[index == 4 ? 0 : index]
+                                            .rentals[index]
                                             .photos[0]
                                             .url,
                                         imageCount:

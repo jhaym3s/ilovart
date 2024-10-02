@@ -27,21 +27,7 @@ class _FilterScreenState extends State<FilterScreen> {
   List<String> selectedRanges = [];
 
   List<String> selectedApartmentTypes = [];
-  List<String> apartmentTypes = [
-    "one bedroom",
-    "Two Bedroom",
-    "Three Bedroom",
-    "Four Bedroom",
-    "Five Bedroom",
-    "apartment",
-    "bungalow",
-    "mansion",
-    "fully detached duplex",
-    "condos",
-    "flat",
-    "terraced house",
-    "semi detached duplex"
-  ];
+ 
   final List<String> amountRange = [
     "100k -350k",
     "350k - 500k",
@@ -51,22 +37,6 @@ class _FilterScreenState extends State<FilterScreen> {
     "5M and Above"
   ];
 
-// void selectRange(String amount){
-//     switch (amount) {
-//     case "100k -350k":
-//      selectedRanges.addAll([100000,350000]);
-//     case "350k - 500k":
-//      selectedRanges.addAll([350000,500000]);
-//     case "500k - 1.5M":
-//      selectedRanges.addAll([500000,1500000]);
-//     case "1.5M - 3.5M":
-//      selectedRanges.addAll([1500000,3500000]);
-//     case "3.5M - 5M":
-//      selectedRanges.addAll([3500000,5000000]);
-//     case "5M and Above":
-//      selectedRanges.addAll([5000000,100000000]);
-// }
-// }
 
   late List<bool> amountIsSelected;
   late List<bool> apartmentIsSelected;
@@ -176,7 +146,7 @@ class _FilterScreenState extends State<FilterScreen> {
                             context: context,
                             returnWidget: PropertyTypePopUp(
                               title: "States",
-                              height: 200,
+                              height: 200.dy,
                               wrapWidget: Wrap(
                                 children: List.generate(
                                   demoStateList.length,
@@ -214,6 +184,7 @@ class _FilterScreenState extends State<FilterScreen> {
                           message: "Please pick from all filter categories");
                       }else{
                           context.read<FilterBloc>().add(ApplyFilter(
+
                           location: locationController.text.toLowerCase(),
                           selectedRanges: selectedRanges,
                           apartmentTypes: selectedApartmentTypes));
