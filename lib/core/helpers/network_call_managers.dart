@@ -136,6 +136,31 @@ class ApiClient {
     }
   }
 
+  Future<dynamic>authGet(
+     {required String url,
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? params,
+  }) async {
+    try {
+      final response = await _dio.get(
+        url,
+        data: data,
+        queryParameters: params,
+        options: Options(
+          headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          },
+        ),
+      );
+      return response.data;
+    } on FormatException {
+      throw const FormatException('Bad response format 👎');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> patch(String url, {Map<String, dynamic>? data}) async {
     try {
       final String otpToken = SharedPreferencesManager.getString(PrefKeys.accessToken);

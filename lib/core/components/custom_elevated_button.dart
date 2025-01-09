@@ -35,17 +35,17 @@ class _CustomElevatedButtonState extends State<CustomElevatedButton> {
           onPressed: widget.onPressed,
           style: ButtonStyle(
             alignment: Alignment.center,
-            backgroundColor: MaterialStateProperty.resolveWith<Color>(
-              (Set<MaterialState> states) {
-                if (states.contains(MaterialState.pressed)) {
+            backgroundColor: WidgetStateProperty.resolveWith<Color>(
+              (Set<WidgetState> states) {
+                if (states.contains(WidgetState.pressed)) {
                   return widget.color;
-                } else if (states.contains(MaterialState.disabled)) {
+                } else if (states.contains(WidgetState.disabled)) {
                   return widget.color.withOpacity(0.5);
                 }
                 return widget.color; // Use the component's default.
               },
             ),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
               ),

@@ -32,7 +32,6 @@ class _Step1State extends State<Step1> {
   @override
   Widget build(BuildContext context) {
     final data = SharedPreferencesManager.getStringList(PrefKeys.signUpDetails) ;
-        print("data ${data[0]}");
     return Scaffold(
       //backgroundColor: kPrimaryColor,
       body: SingleChildScrollView(
@@ -43,19 +42,17 @@ class _Step1State extends State<Step1> {
               listener: (context, state) {
             if (state is RegisterUserFailureState) {
             hideOverlayLoader(context);
-            moveAndClearStack(context: context, page: SignUpScreen.routeName);
+            //moveAndClearStack(context: context, page: SignUpScreen.routeName);
             ToastManager.errorToast(context, message: state.errorMessage.capitalize);
           }
           if (state is RegisterUserSuccessState) {
-            hideOverlayLoader(context);
-            //  context.read<AuthenticationBloc>().add(
-            //   RequestOtpEvent()
-            //  );
-           moveAndClearStack(context: context, page: SignInScreen.routeName);
+             context.read<AuthenticationBloc>().add(
+              RequestOtpEvent()
+             );
           }
           if (state is RequestOTPSuccessState) {
-            hideOverlayLoader(context);
-           moveAndClearStack(context: context, page: NumberVerificationScreen.routeName);
+          hideOverlayLoader(context);
+          moveAndClearStack(context: context, page: NumberVerificationScreen.routeName );
           }
            if (state is RequestOTPFailureState) {
             hideOverlayLoader(context);

@@ -96,9 +96,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
                           }
-                          // if (!value.passwordValidator()) {
-                          //   return "Password must contain a number, special character, uppercase and lowercase letter";
-                          // }
                           return null;
                         },
                         hidePassword: hidePassword,

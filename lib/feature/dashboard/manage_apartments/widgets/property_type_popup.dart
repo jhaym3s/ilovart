@@ -7,7 +7,7 @@ import '../../../../core/configs/configs.dart';
 class PropertyTypePopUp extends StatefulWidget {
   const PropertyTypePopUp({
     Key? key,
-    this.height = 150, required this.wrapWidget, this.title = "Property Type"
+   required  this.height , required this.wrapWidget, this.title = "Property Type"
   }) : super(key: key);
   final double? height;
   final Widget wrapWidget;

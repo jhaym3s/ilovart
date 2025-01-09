@@ -23,6 +23,7 @@ class LoginUserEvent extends AuthenticationEvent{
 }
 
 class RequestOtpEvent extends AuthenticationEvent{
+  RequestOtpEvent();
   @override
   List<Object?> get props => [];
 }

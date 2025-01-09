@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travoli/core/configs/configs.dart';
 import 'package:travoli/core/helpers/regex_validation.dart';
+import 'package:travoli/core/helpers/shared_preference_manager.dart';
 
 import '../../../../core/components/components.dart';
 import '../../../../core/components/custom_loader.dart';
+import '../../../../core/configs/storage_box.dart';
 import '../../../../core/helpers/router/router.dart';
 import '../../../../core/helpers/toast_manager.dart';
 import '../../domain/bloc/authentication_bloc.dart';
@@ -24,6 +26,7 @@ class _NumberVerificationScreenState extends State<NumberVerificationScreen> {
   final _pinController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final email = SharedPreferencesManager.getString(PrefKeys.email);
     return Scaffold(
       body: SingleChildScrollView(
         child: BlocConsumer<AuthenticationBloc, AuthenticationState>(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+//import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travoli/feature/dashboard/agent_dashboard.dart';
@@ -96,34 +96,34 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
    }
 
 
-   Future<void> _getCountry() async {
-    try {
-      // Check if location services are enabled
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        return; // Location services are not enabled
-      }
-      // Request location permission
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
-        permission = await Geolocator.requestPermission();
-        if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
-          return; // Permissions are denied
-        }
-      }
-      // Get the current position
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-      // Reverse geocoding to get place details
-      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-      Placemark place = placemarks[0];
-      print("country ${placemarks}");
-      print("country ${place}");
-      print("country ${place.country}");
-      SharedPreferencesManager.setString(PrefKeys.country, place.country);
-    } catch (e) {
-      print('Error getting location: $e');
-    }
-  }
+  //  Future<void> _getCountry() async {
+  //   try {
+  //     // Check if location services are enabled
+  //     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //     if (!serviceEnabled) {
+  //       return; // Location services are not enabled
+  //     }
+  //     // Request location permission
+  //     LocationPermission permission = await Geolocator.checkPermission();
+  //     if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+  //       permission = await Geolocator.requestPermission();
+  //       if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+  //         return; // Permissions are denied
+  //       }
+  //     }
+  //     // Get the current position
+  //     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  //     // Reverse geocoding to get place details
+  //     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+  //     Placemark place = placemarks[0];
+  //     print("country ${placemarks}");
+  //     print("country ${place}");
+  //     print("country ${place.country}");
+  //     SharedPreferencesManager.setString(PrefKeys.country, place.country);
+  //   } catch (e) {
+  //     print('Error getting location: $e');
+  //   }
+  // }
  
   @override
   Widget build(BuildContext context) {

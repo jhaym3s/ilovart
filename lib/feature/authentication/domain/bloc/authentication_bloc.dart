@@ -27,6 +27,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     registerUser.fold(
       (l) => emit(RegisterUserFailureState(errorMessage: l)), 
       (r) {
+         print("sign up $r");
         SharedPreferencesManager.setString(PrefKeys.userId, r["data"]["_id"]);
         SharedPreferencesManager.setString(PrefKeys.email, r["data"]["email"]);
         emit(RegisterUserSuccessState());
@@ -54,9 +55,16 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   FutureOr<void> getOtp(RequestOtpEvent event, Emitter<AuthenticationState> emit) async {
       emit(RequestOTPLoadingState());
+      print("noisy");
     final requestOtp = await authenticationService.getOTP();
-    requestOtp.fold((l) => emit(RequestOTPFailureState(errorMessage: l)), 
-    (r) => RequestOTPSuccessState());
+    requestOtp.fold((l) {
+       print("noisy $l");
+      emit(RequestOTPFailureState(errorMessage: l));
+    }, 
+    (r) {
+       print("noisy $r");
+      return RequestOTPSuccessState();
+    });
   }
 
   FutureOr<void> verifyOtp(VerifyOtpEvent event, Emitter<AuthenticationState> emit) async{

@@ -18,6 +18,9 @@ class AppEndpoints {
 
   static const String getOTP = "auth/getOTP";
   static const String verifyOTP = "auth/verifyOTP";
+  static const String forgotPassword = "auth/forgot-password";
+  
+
 
 //
 

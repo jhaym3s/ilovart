@@ -49,14 +49,14 @@ class AuthenticationService{
    }
 
    Future<Either<String,dynamic>> getOTP() async {
-    final userId = SharedPreferencesManager.getString(PrefKeys.userId);
-    final email =  SharedPreferencesManager.getString(PrefKeys.email);
+    final email = SharedPreferencesManager.getString(PrefKeys.email);
+    final uId = SharedPreferencesManager.getString(PrefKeys.userId);
     try{
       final response = await apiClient.authPost(
       url: AppEndpoints.getOTP, 
       data: {
     "email": email,
-    "uid": userId,
+    "uid": uId
     });
     return Right(response);
     }catch(e){
@@ -66,9 +66,8 @@ class AuthenticationService{
    }
 
    Future<Either<String,dynamic>> verifyOTP({required String otp}) async {
-    
     try{
-      final response = await apiClient.post(
+      final response = await apiClient.authPost(
       url: AppEndpoints.verifyOTP, 
       data: {
         "otp": otp
@@ -79,4 +78,7 @@ class AuthenticationService{
         return Left(ex);
     }
    }
+
+
+  
 }
